@@ -1,0 +1,10 @@
+#Bombillo-Resistencia
+#V	I
+2	15
+3	19
+4	23
+5	26
+6	30
+7	33
+8	36
+
