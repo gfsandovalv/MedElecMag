@@ -1,0 +1,91 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage{float}
+\usepackage[figurename=Fig.]{caption}
+\setlength{\columnsep}{20.0pt}
+\usepackage[a4paper, margin=22.4mm]{geometry}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{enumerate} 
+\title{Mediciones de corriente y voltaje para materiales \'ohmicos y no \'ohmicos}
+\author{Gabriel Sandoval \\ gfsandovalv@unal.edu.co \and Sergio Cortéz \\sacortesc@unal.edu.co \and Juan Mojica \\jsmojicaj@unal.edu.co\\ \\Universidad Nacional de Colombia\\Facultad de Ciencias \\ Sede Bogotá}
+\date{Febrero 2017}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+In this article shows a numerical solution for the problem \emph{Norhtern Lights}. It refers to the trajectory of charged particles that form the \emph{Aurora Borealis}, when them entrance to the Earth magnetosphere. For that it is implements the Sörmer-Verlet method, wichs is a symplectic integrator for ordinary differential equations of second order and fourth order Runge-Kutta method that is method for first order equations.  
+\end{abstract}
+
+\section{Introducción}
+En el presente artículo se realiza una solución numérica a ecuaciones diferenciales de primer y segundo orden para obtener la trayectoria de partículas que forman las auroras boreales. Tales particulas están cargadas por lo tanto se ven afectadas por el campo magnético terrestre. Para esto se crea un un primner código en C++ que ejecuta el algoritmo Störmer-Verlet y Runge-Kutta, el cual arroja resultados erróneos. Por lo tanto se crea un segundo código más organizado, con el que se obtiene los valores correctos.
+\section{Detalles experimentales}
+El método de Verlet-Störmer se aplica a ecuaciones diferenciales de la forma 
+\begin{equation}\label{form}
+\ddot{q}=f(q)
+\end{equation}
+La formulación de dos pasos viene dada por: \\
+\begin{equation}\label{twosteps}
+q_{n+1}-2q_{n}+q_{n-1}=h^{2}f(q_n)
+\end{equation}
+Donde $h$ es el paso de timepo definido.\\
+De la ecuación \eqref{form} puede verse que $f$ no depende de $\dot{q}$, así que se toma $v=\dot{q}$. Usando diferencias finitas, ésta derivada puede aproximarse de la siguiente forma:
+\begin{equation}\label{vel}
+v_n=\frac{q_{n+1}-q_{n-1}}{2h}
+\end{equation}
+Despejando $q_{n-1}$ de \eqref{vel} y reemplazando en \eqref{twosteps} se obitiene un método de un paso de la forma:
+\begin{equation}\label{onestep}
+q_{n+1}=q_n+h(v_n+\frac{h}{2}f(q_n))
+\end{equation}
+Usando las ecuaciones anteriores se llega a que:
+\begin{equation}
+v_{n+1}=v_n+\frac{h}{2}(f(q_n)+f(q_{n+1}))
+\end{equation}
+El método de Runge-Kutta de cuarto orden (RK4) se aplica a ecuaciones de la forma $\dot{y}=f(t,y)$. La formulación de un paso viene dada por:
+\begin{equation}\label{RK4}
+y_{n+1}=y_n+\frac{h}{6}(k_1+2k_2+2k_3+k_4)
+\end{equation}
+Donde,
+\begin{equation}\label{kvalues}
+\begin{split}
+k_1=&f(t_n,y_n)\\
+k_2=&f(t_n+\frac{h}{2},y_n+\frac{h}{2}k_1)\\
+k_2=&f(t_n+\frac{h}{2},y_n+\frac{h}{2}k_2)\\
+k_4=&f(t_n+h,y_n+hk_3)
+\end{split}
+\end{equation}
+\section{Resultados y análisis}
+A continuación se mostrará la información proporcionada \cite{problem} para resolver el problema.
+\begin{equation}\label{problem}
+\begin{split}
+R''=&\Big(\frac{2\gamma}{R}+\frac{R}{r^3}\Big)\Big(\frac{2\gamma}{R^2}+\frac{3R^2}{r^5}-\frac{1}{r^3}\Big)\\
+z''=&\Big(\frac{2\gamma}{R}+\frac{R}{r^3}\Big)\Big(\frac{3Rz}{r^5}\Big)\\
+\phi'=&\Big(\frac{2\gamma}{R}+\frac{R}{r^3}\Big)\frac{1}{R}
+\end{split}
+\end{equation}
+Donde $r^2=R^2+z^2$, y $\gamma$ es la constante de integración que se obtiene al integrar $\phi''$ una vez.
+Las condiciones iniciales son: 
+\begin{equation}
+\begin{split}
+R_0=0.257453, R'_0=\sqrt{Q_0}cos u\\ z_0=0.314687,  z'_0=\sqrt{Q_0}sin u
+\end{split}
+\end{equation} 
+Donde $r_0=\sqrt{R_0^2+z_0^2}$, $Q_0=1-(2\gamma/R_0+R_0/r_0^3)^2$, $\gamma=-0.5$ y $u=5\pi/4$
+\section{Conclusiones}
+\begin{itemize}
+\item El hecho de que un código compile, sea ejecutable y arroje ciertos valores, no garantíza la veracidad de dichos datos obtenidos.
+\item Cuando se realizan códigos relativamente extensos, mantener el orden del mismo es imprecindible. De otro modo es muy fácil cometer errores.
+\item Mantener la fácilidad en el manejo de los datos hace más entendible el algoritmo. Por ejemplo, al usar estructuras de datos adecuadas se logra un mayor entendimiento de las funciones.
+\end{itemize}
+\begin{thebibliography}{1}
+  \bibitem{problem} Simon Sirca, Martin Horvat {\em Computational Methos for Physicists, Compendium for Students}  2013. Springer.
+  \bibitem{stormer}  The Japan Reader {\em Geometric numerical integration
+illustrated by the Störmer–Verlet method} 2003.
+  Cambridge University Press.
+  \bibitem{traj}  C. Störmer {\em Sur les trajectoires des corpuscules électrisés.} 1907.
+  \bibitem{rk4}  Alejandro L. Garcia {\em Numerical Methods for Physics} 2000.  Prentience Hall.
+  \end{thebibliography}
+\end{document}
