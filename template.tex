@@ -1,0 +1,205 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage{float}
+\usepackage[figurename=Fig.]{caption}
+\setlength{\columnsep}{20.0pt}
+\usepackage[a4paper, margin=22.4mm]{geometry}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{enumerate} 
+\title{Mediciones de corriente y voltaje para materiales \'ohmicos y no \'ohmicos}
+\author{Gabriel Sandoval \\ gfsandovalv@unal.edu.co \and Sergio Cortéz \\sacortesc@unal.edu.co \and Juan Mojica \\jsmojicaj@unal.edu.co\\ \\Universidad Nacional de Colombia\\Facultad de Ciencias \\ Sede Bogotá}
+\date{Febrero 2017}
+
+%para insertar código con colores
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.32,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{colorss}{
+ backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    language=c++,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=colorss}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+In this article shows a numerical solution for the problem \emph{Norhtern Lights}. It refers to the trajectory of charged particles that form the \emph{Aurora Borealis}, when them entrance to the Earth magnetosphere. For that it is implements the Sörmer-Verlet method, wichs is a symplectic integrator for ordinary differential equations of second order and fourth order Runge-Kutta method that is method for first order equations.  
+\end{abstract}
+
+\section{Introducción}
+En el presente artículo se realiza una solución numérica a ecuaciones diferenciales de primer y segundo orden para obtener la trayectoria de partículas que forman las auroras boreales. Tales particulas están cargadas por lo tanto se ven afectadas por el campo magnético terrestre. Para esto se crea un un primner código en C++ que ejecuta el algoritmo Störmer-Verlet y Runge-Kutta, el cual arroja resultados erróneos. Por lo tanto se crea un segundo código más organizado, con el que se obtiene los valores correctos.
+\section{Detalles experimentales}
+El método de Verlet-Störmer se aplica a ecuaciones diferenciales de la forma 
+\begin{equation}\label{form}
+\ddot{q}=f(q)
+\end{equation}
+La formulación de dos pasos viene dada por: \\
+\begin{equation}\label{twosteps}
+q_{n+1}-2q_{n}+q_{n-1}=h^{2}f(q_n)
+\end{equation}
+Donde $h$ es el paso de timepo definido.\\
+De la ecuación \eqref{form} puede verse que $f$ no depende de $\dot{q}$, así que se toma $v=\dot{q}$. Usando diferencias finitas, ésta derivada puede aproximarse de la siguiente forma:
+\begin{equation}\label{vel}
+v_n=\frac{q_{n+1}-q_{n-1}}{2h}
+\end{equation}
+Despejando $q_{n-1}$ de \eqref{vel} y reemplazando en \eqref{twosteps} se obitiene un método de un paso de la forma:
+\begin{equation}\label{onestep}
+q_{n+1}=q_n+h(v_n+\frac{h}{2}f(q_n))
+\end{equation}
+Usando las ecuaciones anteriores se llega a que:
+\begin{equation}
+v_{n+1}=v_n+\frac{h}{2}(f(q_n)+f(q_{n+1}))
+\end{equation}
+El método de Runge-Kutta de cuarto orden (RK4) se aplica a ecuaciones de la forma $\dot{y}=f(t,y)$. La formulación de un paso viene dada por:
+\begin{equation}\label{RK4}
+y_{n+1}=y_n+\frac{h}{6}(k_1+2k_2+2k_3+k_4)
+\end{equation}
+Donde,
+\begin{equation}\label{kvalues}
+\begin{split}
+k_1=&f(t_n,y_n)\\
+k_2=&f(t_n+\frac{h}{2},y_n+\frac{h}{2}k_1)\\
+k_2=&f(t_n+\frac{h}{2},y_n+\frac{h}{2}k_2)\\
+k_4=&f(t_n+h,y_n+hk_3)
+\end{split}
+\end{equation}
+\section{Resultados y análisis}
+A continuación se mostrará la información proporcionada \cite{problem} para resolver el problema.
+\begin{equation}\label{problem}
+\begin{split}
+R''=&\Big(\frac{2\gamma}{R}+\frac{R}{r^3}\Big)\Big(\frac{2\gamma}{R^2}+\frac{3R^2}{r^5}-\frac{1}{r^3}\Big)\\
+z''=&\Big(\frac{2\gamma}{R}+\frac{R}{r^3}\Big)\Big(\frac{3Rz}{r^5}\Big)\\
+\phi'=&\Big(\frac{2\gamma}{R}+\frac{R}{r^3}\Big)\frac{1}{R}
+\end{split}
+\end{equation}
+Donde $r^2=R^2+z^2$, y $\gamma$ es la constante de integración que se obtiene al integrar $\phi''$ una vez.
+Las condiciones iniciales son: 
+\begin{equation}
+\begin{split}
+R_0=0.257453, R'_0=\sqrt{Q_0}cos u\\ z_0=0.314687,  z'_0=\sqrt{Q_0}sin u
+\end{split}
+\end{equation} 
+Donde $r_0=\sqrt{R_0^2+z_0^2}$, $Q_0=1-(2\gamma/R_0+R_0/r_0^3)^2$, $\gamma=-0.5$ y $u=5\pi/4$
+\section{Conclusiones}
+Para la ejecución de los algoritmos se crearon dos códigos fuente. Pues como se verá, la versión preeliminar arroja resultados incorrectos.
+Éste código consta de dos partes principales. En la primera se implementa el método Störmer-Verlet y en la segunda se implenta RK4.\\
+Las funciones \texttt{SDZ} y \texttt{SDR} returnan los valores de $R''$ y $z''$.
+Mientras \texttt{StormerZ} y \texttt{StormerR} implementan la ecuacion \eqref{onestep} para $z$ y $R$ respectivamente.
+Por otro lado \texttt{Stormerv} y \texttt{Stormery} implementan la ecuación \eqref{vel} para $z'$ y $R'$ respectivamente. \\
+La forma de implementación de estas funciones se da de forma alternante pues inicialmente se calcula un valor de $z'$ usando \text{Stormery} y la función \texttt{StormerZ} recibe este valor como argumento y finalmente retorna el valor de $Z$. De manera similar se procede para $R$.\\
+Por último, se realiza la integración de $\phi'$ usando el método RK4. Sin embargo, la forma de $\phi'$ que se tiene es $\phi'=f(R,r)$, donde ni $R$ ni $r$ dependen de $\phi$, por lo tanto \eqref{kvalues} no depende $y$.
+La función "phiprima" returna los valores de $\phi'$ y tiene como argumentos los valores de $R$ y $z$ calculados anteriormente.\\
+Al ejecutar éste código se obtiene la siguiente gráfica.
+\begin{figure}[H]
+\label{fig:1}
+  \includegraphics[width=\linewidth]{1.pdf}
+  \caption{Trayectoria obtenida con el código preeliminar.}
+\end{figure}
+
+Verificando ésta gráfica con las que se muestran en \cite{traj} se observa que los valores obtenidos estan errados, por lo que se procede a la creación de un segundo código.
+\lstset{style=colorss}
+\subsection{Código definitivo}
+Para realizar éste código se tomaron las funciones $R''$ y $z''$ como las componentes de un vector. De modo similar para $R'$ y $z'$. Así que se definen estos vecotes de la siguiente forma:
+\begin{equation}
+\begin{split}
+\vec{Q}_{n+1}=&\begin{pmatrix}
+R_{n+1}\\
+z_{n+1}
+\end{pmatrix}\\
+=&\begin{pmatrix}
+R_n+h(v_{n,R}+\frac{h}{2}R''(R_n,z_n))\\
+z_n+h(v_{n,z}+\frac{h}{2}z''(R_n,z_n))
+\end{pmatrix}\\
+\\
+\vec{V}_{n+1}=&\begin{pmatrix}
+R'_{n+1}\\
+z'_{n+1}
+\end{pmatrix}\\
+=&\begin{pmatrix}
+v_{n,R}+\frac{h}{2}(R''(R_n,z_n)+R''(R_{n+1},z_{n+1})\\
+v_{n,z}+\frac{h}{2}(z''(R_n,z_n)+z''(R_{n+1},z_{n+1})
+\end{pmatrix}
+\end{split}
+\end{equation}
+Por lo tanto conviene crear una estructura de datos para estos vectores como se muestra a continuación.
+\begin{lstlisting}[frame=single]
+struct vectorR2{
+  double R=0;
+  double z=0;
+};
+struct vectorR4{
+  double r1=0;
+  double r2=0;
+  double r3=0;
+  double r4=0;
+};
+\end{lstlisting}
+La estructura \texttt{vectorR4} se crea para que la función stormer retorne tanto las posiciones como las velocidades. 
+Adicional a esto, para tener un código más ordenado, todas las funciones necesarias fueron ecritas en un archivo individual \texttt{stormer.h}. La implementación de estas funciones se da en un archivo distinto que incluye al anterior.
+\begin{lstlisting}[frame=single]
+/* stormer1.cpp */
+#include "stormer.h"
+int main(){
+...
+}
+\end{lstlisting}
+Como las condiciones inciales no se modifican, se decide introducirlas como constantes en \texttt{stormer.h}. Lo que se hace en el segundo archivo es definir el intervalo de tiempo en el que se desea integrar, definir el paso del tiempo, implementar las funciones e imprimir los datos en un archivo de texto. Este archiv, usando la libreria \texttt{<fstream>} se crea automáticamente al ejecutar el programa. 
+
+Al gráficar los datos obtenidos con este código se obtiene la siguiente curva.
+\begin{figure}[H]
+\label{fig:2}
+  \includegraphics[width=\linewidth]{2.png}
+  \caption{Trayectoria obtenida con el segundo código.}
+\end{figure}
+Esta última gráfica tiene un comportamiento similar a lo mostrado en \cite{traj}.
+
+\section{Conclusiones}
+\begin{itemize}
+\item El hecho de que un código compile, sea ejecutable y arroje ciertos valores, no garantíza la veracidad de dichos datos obtenidos.
+\item Cuando se realizan códigos relativamente extensos, mantener el orden del mismo es imprecindible. De otro modo es muy fácil cometer errores.
+\item Mantener la fácilidad en el manejo de los datos hace más entendible el algoritmo. Por ejemplo, al usar estructuras de datos adecuadas se logra un mayor entendimiento de las funciones.
+\end{itemize}
+
+
+
+\begin{thebibliography}{1}
+
+  \bibitem{problem} Simon Sirca, Martin Horvat {\em Computational Methos for Physicists, Compendium for Students}  2013. Springer.
+
+  \bibitem{stormer}  The Japan Reader {\em Geometric numerical integration
+illustrated by the Störmer–Verlet method} 2003.
+  Cambridge University Press.
+  
+  
+  \bibitem{traj}  C. Störmer {\em Sur les trajectoires des corpuscules électrisés.} 1907.
+
+  
+  \bibitem{rk4}  Alejandro L. Garcia {\em Numerical Methods for Physics} 2000. 
+  Prentience Hall.
+
+  
+
+  \end{thebibliography}
+\end{document}
+
+  
