@@ -1,0 +1,63 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage{float}
+\usepackage[figurename=Fig.]{caption}
+\setlength{\columnsep}{20.0pt}
+\usepackage[a4paper, margin=22.4mm]{geometry}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{enumerate} 
+\title{Medición del campo el\'ectrico dadas las l\'ineas equipotenciales de una distrubuci\'on de carga}
+\author{Gabriel Sandoval \\ gfsandovalv@unal.edu.co \and Sergio Cortéz \\sacortesc@unal.edu.co \and Juan Mojica \\jsmojicaj@unal.edu.co\\ \\Universidad Nacional de Colombia\\Facultad de Ciencias \\ Sede Bogotá}
+\date{Febrero 2017}
+
+\begin{document}
+\maketitle{}
+\begin{abstract}
+The abstract goes here.
+\end{abstract}
+
+\section{Introducción}
+La Introducción va aquí.
+\section{Márco teórico}
+El campo generado por una distribución de cargas estáticas, \emph{campo eléctrico}, es un campo conservativo, por lo que se puede ver como el gradiente de un potencial, como sigue. \cite{griffiths}
+\begin{equation}\label{gradiente}
+  \vec{E}=\vec{\nabla}V(\vec{r})
+\end{equation}
+El campo escalar $V(\vec{r})$ se conoce como \emph{potencial eléctrico}.\\
+Si se conoce la forma funcional del potencial de la distribución, facilemte se obtiene el campo eléctrico de forma exacta. Sin embargo, si lo único conocido es la gráfica del potencial igualado a una cosntante $V(\vec{r})=V_0$, es decir las superficies equipotenciales (o curvas, en dos dimensiones), puede hacerse una apróximación númerica usando diferencias fiitas en vez de infinitesimales.
+\begin{equation*}
+  \begin{split}
+    \vec{\nabla}V(\vec{r})&=\Big(\dfrac{\partial}{\partial x}, \dfrac{\partial}{\partial y},
+    \dfrac{\partial}{\partial z}\Big) V(\vec{r})\\
+    &\approx \Big(\dfrac{\Delta}{\Delta x}, \dfrac{\Delta}{\Delta y}, \dfrac{\Delta}{\Delta z}\Big) V(\vec{r})\\
+    &\approx \vec{E}(\vec{r})
+  \end{split}
+\end{equation*}
+En particular, para una dimensión se tiene:
+\begin{equation}\label{1dimension}
+\vec{E}(\vec{r}) \approx \dfrac{\Delta V(x)}{\Delta x}=\dfrac{V_i-V_{i+1}}{x_i-x_{i+1}}  
+\end{equation}
+\section{Detalles experimentales}
+Para \emph{dibujar} las líneas equipotenciales, se usó un tablero al que en su parte superior se fija una placa recubierta con grafito, que además tiene un par de áreas recubiertas de un  material conductor, con alguna forma particular. Éstas se servirán como distribución de carga. Cada una de estas árear se conecta al estremo de una pila de 1.5V, de modo que la distrubución de carga, a gran escala, configura un dipolo. \\Además hay una especie de tenedor que sirve para moverse por el tablero, de modo que en la parte inferior haga contancto con la placa en el área recubierta con grafito y en la superior sirva como guía para trazar cada punto dela respectiva línea equipotencial. Al conectar este tenedor a un amperímetro y a una resistencia, se obtiene una medición. La idea es que el potencial generado por la distribución, en un punto, se compense con una caida de potencial dada por la resistencia de tal modo que la lectura en el amperimetro sea de 0.0 $\mu{}$A. En total se tienen siete  resistencias en serie, así el máximo de lineas equipotenciales que se pueden dibujar es de siete. \\
+Las resistencias son iguales por lo que se espera una caída de potencial de $\frac{3}{14}$V por cada una.
+\section{Resultados y análisis}
+Se hallaron las curvas equipotenciales de tres distribuciones y, se escogieron aletoriamente tres puntos por cada distribución para hallar el campo tales puntos.
+
+
+
+\cite{problem} para resolver el problema.
+\section{Conclusiones}
+\begin{itemize}
+\item No es necesario conocer una expresión analítica que describa las curvas equipotenciales de una distribución de carga, sino que se puede aproximar realizando mediciones de distancia y potencial.
+\item 
+\item 
+\end{itemize}
+\begin{thebibliography}{1}
+  \bibitem{griffiths} David J. Griffiths {\em Introduction to Electrodynamics} Third Edition,  1999. Prentice Hall.
+  \bibitem{rk4}  Alejandro L. Garcia {\em Numerical Methods for Physics} 2000.  Prentience Hall.
+  \end{thebibliography}
+\end{document}
